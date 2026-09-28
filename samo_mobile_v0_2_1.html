@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#07152f" />
+<title>SAMO - The Good Boy</title>
+<style>
+:root{
+  --ink:#07152f;
+  --cream:#ffe0ad;
+  --cream2:#fff1d3;
+  --gold:#ffb229;
+  --brown:#7b461e;
+  --wood:#b46f38;
+  --green:#54b86b;
+  --red:#ef5350;
+  --blue:#4db5ff;
+  --panel:#0b1d3a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#07152f;font-family:"Courier New",monospace;color:#fff;overflow-x:hidden}
+body{display:flex;justify-content:center}
+button{font:inherit}
+.app{
+  width:100%;
+  max-width:480px;
+  min-height:100dvh;
+  background:linear-gradient(#07152f 0 22%, #d8a06a 22% 67%, #6c3d20 67%);
+  position:relative;
+  overflow:hidden;
+  padding-bottom:calc(94px + env(safe-area-inset-bottom));
+}
+.pixel-border{box-shadow:0 0 0 3px #2d180b, 0 0 0 6px var(--cream)}
+.top{
+  background:#07152f;
+  padding:calc(10px + env(safe-area-inset-top)) 12px 12px;
+  border-bottom:4px solid #8a4b22;
+}
+.brand{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:start;
+}
+.brand h1{margin:0;text-align:center;font-size:34px;line-height:.9;color:var(--cream);text-shadow:3px 3px 0 #8d4f18}
+.brand h2{margin:5px 0 0;text-align:center;font-size:15px;color:var(--gold)}
+.mini{font-size:12px;line-height:1.45}
+.right{text-align:right}
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:11px;
+}
+.stat{background:#0f274d;border:2px solid #f2cf9a;border-radius:8px;padding:5px}
+.stat .t{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}
+.bar{height:9px;background:#061226;border:1px solid #ffe0ad;border-radius:99px;overflow:hidden}
+.fill{height:100%;transition:width .25s}
+.hunger{background:#ff9d35}.energy{background:#65d36e}.happy{background:#ffd34d}.love{background:#ff6262}
+.scene{
+  min-height:390px;position:relative;
+  background:
+    linear-gradient(#eed0aa 0 65%, #ad6a36 65% 67%, #7c4724 67%);
+  border-bottom:4px solid #3b210f;
+}
+.window{
+  position:absolute;right:18px;top:30px;width:145px;height:150px;
+  border:6px solid #73431f;background:linear-gradient(#71c7ff 0 40%,#dff6ff 40% 45%,#69985c 45% 100%);
+  box-shadow:inset 0 0 0 3px #dda46a;
+}
+.window:before,.window:after{content:"";position:absolute;background:#73431f}
+.window:before{width:5px;height:100%;left:50%}
+.window:after{height:5px;width:100%;top:50%}
+.poster{
+  position:absolute;left:16px;top:44px;border:3px solid #6e3b1f;background:#f9e4c2;color:#2f1c11;
+  padding:10px 7px;font-size:10px;text-align:center;width:80px;
+}
+.rug{
+  position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+  width:78%;height:78px;border-radius:50%;background:#a53a31;border:5px solid #7a251f;
+  opacity:.85
+}
+.dogwrap{position:absolute;left:50%;bottom:48px;transform:translateX(-50%);text-align:center;width:250px}
+.mood{font-size:28px;height:30px}
+.dog{font-size:108px;line-height:.95;filter:drop-shadow(0 7px 0 rgba(0,0,0,.14));transition:transform .16s}
+.dog.bump{transform:translateY(-10px) scale(1.04)}
+.name{font-size:18px;font-weight:900;color:#2d180b;background:#e6a45b;display:inline-block;padding:5px 14px;border-radius:6px;border:3px solid #5c3518}
+.bowl{position:absolute;left:20px;bottom:14px;background:#2262a0;border:4px solid #19385b;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:bold}
+.chest{position:absolute;right:18px;bottom:12px;background:#a66025;border:4px solid #583013;padding:8px;border-radius:8px;font-size:24px}
+.mission{
+  margin:12px;
+  background:#07152f;border:3px solid #f4d4a5;border-radius:10px;padding:11px 12px;
+  box-shadow:0 4px 0 #6c3a19;
+}
+.mission-title{font-weight:900;font-size:15px;color:#fff1d1}
+.mission-sub{font-size:11px;color:#f8dcb4;margin-top:4px}
+.mprog{height:8px;background:#12294c;border-radius:99px;overflow:hidden;margin-top:8px}
+.mprog > div{height:100%;background:#63d77a;transition:width .2s}
+.message{
+  margin:0 12px 12px;background:rgba(7,21,47,.92);padding:10px;border-radius:8px;border:2px solid #c59659;
+  font-size:11px;min-height:42px
+}
+.bottom{
+  position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+  width:100%;max-width:480px;background:#07152f;border-top:4px solid #c47b38;
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  display:grid;grid-template-columns:repeat(5,1fr);gap:5px;z-index:20;
+}
+.action{
+  min-height:66px;border:2px solid #f3d4a5;border-radius:9px;background:#122a50;color:#fff;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;font-size:10px;font-weight:bold;
+}
+.action span{font-size:24px}.action:active{transform:translateY(2px);background:#1e3a67}
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;
+  z-index:50;padding:22px
+}
+.overlay.show{display:flex}
+.card{
+  width:min(92vw,420px);background:#07152f;border:4px solid #ffe1ac;border-radius:12px;padding:20px;text-align:center;
+  box-shadow:0 0 0 5px #2d180b;
+}
+.card h3{font-size:25px;margin:0 0 10px;color:#fff0cf}
+.card p{font-size:13px;line-height:1.5}
+.card button{
+  margin-top:8px;background:#173460;color:#fff;border:3px solid #ffe0ad;border-radius:8px;padding:11px 16px;font-weight:bold
+}
+.start{
+  position:fixed;inset:0;background:linear-gradient(#07152f,#10274d);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.start.hidden{display:none}
+.start .logo{font-size:52px;font-weight:900;color:#ffe0ad;text-shadow:4px 4px 0 #8b4f1d;margin-bottom:4px}
+.start .sub{color:#ffba38;font-size:18px;font-weight:bold}
+.start .paw{font-size:80px;margin:22px 0 5px}
+.start button{margin-top:20px;padding:14px 20px;border:4px solid #ffe0ad;border-radius:10px;background:#173460;color:white;font-weight:900;font-size:18px}
+.secondary{
+  position:absolute;left:12px;right:12px;bottom:94px;display:flex;justify-content:center;gap:8px;z-index:5
+}
+.secondary button{
+  background:#7d4725;color:#fff;border:2px solid #f2c995;border-radius:8px;padding:7px 10px;font-size:10px;font-weight:bold
+}
+@media (max-height:720px){
+  .scene{min-height:330px}
+  .dog{font-size:88px}
+  .window{height:125px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="startScreen" class="start">
+    <div class="card">
+      <div class="logo">SAMO</div>
+      <div class="sub">THE GOOD BOY</div>
+      <div class="paw">🐾</div>
+      <p>Pequeñas aventuras,<br>grandes momentos.</p>
+      <button id="startBtn">EMPEZAR PARTIDA</button>
+      <p style="opacity:.65;font-size:10px;margin-top:14px">La partida se guarda automáticamente en este dispositivo.</p>
+    </div>
+  </div>
+
+  <header class="top">
+    <div class="brand">
+      <div class="mini">
+        <b>🐶 SAMO</b><br>
+        ❤️ <span id="heartText">❤️❤️❤️❤️❤️</span><br>
+        🦴 <span id="bones">0</span>
+      </div>
+      <div>
+        <h1>SAMO</h1>
+        <h2>THE GOOD BOY</h2>
+      </div>
+      <div class="mini right">
+        <b id="world">MUNDO 1-1</b><br>
+        <span id="zone">CASA DULCE CASA</span><br>
+        🪙 <span id="coins">20</span>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="t"><span>🍖</span><b id="hungerN">75</b></div><div class="bar"><div id="hunger" class="fill hunger"></div></div></div>
+      <div class="stat"><div class="t"><span>⚡</span><b id="energyN">75</b></div><div class="bar"><div id="energy" class="fill energy"></div></div></div>
+      <div class="stat"><div class="t"><span>😊</span><b id="happyN">80</b></div><div class="bar"><div id="happy" class="fill happy"></div></div></div>
+      <div class="stat"><div class="t"><span>❤️</span><b id="loveN">80</b></div><div class="bar"><div id="love" class="fill love"></div></div></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="scene">
+      <div class="window"></div>
+      <div class="poster">GOOD<br>DOG<br><br>GOOD<br>LIFE<br>🐾</div>
+      <div class="rug"></div>
+      <div class="dogwrap">
+        <div class="mood" id="mood">💖</div>
+        <div class="dog" id="dog">🐶</div>
+        <div class="name">SAMO · NIVEL <span id="level">1</span></div>
+      </div>
+      <div class="bowl">SAMO 🍖</div>
+      <div class="chest">🦴🎾</div>
+      <div class="secondary">
+        <button data-action="sleep">😴 DORMIR</button>
+        <button data-action="train">🏅 ENTRENAR</button>
+      </div>
+    </section>
+
+    <section class="mission">
+      <div class="mission-title">🎯 <span id="missionName">Hacer compañía</span></div>
+      <div class="mission-sub">
+        <span id="missionText">Acaricia a Samo 3 veces</span> ·
+        Recompensa: <span id="reward">10 🪙 + 1 🦴</span>
+      </div>
+      <div class="mprog"><div id="missionBar"></div></div>
+    </section>
+
+    <section class="message" id="message">
+      🏠 Samo está esperando una aventura.
+    </section>
+  </main>
+
+  <nav class="bottom">
+    <button class="action" data-action="feed"><span>🍖</span>COMER</button>
+    <button class="action" data-action="play"><span>🎾</span>JUGAR</button>
+    <button class="action" data-action="walk"><span>🐾</span>PASEAR</button>
+    <button class="action" data-action="pet"><span>❤️</span>MIMOS</button>
+    <button class="action" data-action="explore"><span>🧭</span>EXPLORAR</button>
+  </nav>
+</div>
+
+<div id="popup" class="overlay">
+  <div class="card">
+    <h3>¡MISIÓN COMPLETADA!</h3>
+    <div style="font-size:48px">❤️</div>
+    <p id="popupText">¡Buen chico!</p>
+    <button id="continueBtn">CONTINUAR</button>
+  </div>
+</div>
+
+<script>
+const clamp=(n)=>Math.max(0,Math.min(100,n));
+const zones=["Casa dulce casa","Padul","Granada Centro","Albaicín","La Alhambra","Sierra Nevada"];
+const missions=[
+ {name:"Hacer compañía",text:"Acaricia a Samo 3 veces",type:"pet",target:3,coins:10,bones:1,xp:20},
+ {name:"Hora de jugar",text:"Juega con Samo 2 veces",type:"play",target:2,coins:12,bones:1,xp:20},
+ {name:"Paseo feliz",text:"Da 2 paseos con Samo",type:"walk",target:2,coins:14,bones:1,xp:25},
+ {name:"Explorador",text:"Explora 2 veces",type:"explore",target:2,coins:18,bones:1,xp:30},
+ {name:"Bien alimentado",text:"Alimenta a Samo 2 veces",type:"feed",target:2,coins:10,bones:1,xp:18},
+ {name:"Buen alumno",text:"Entrena con Samo 1 vez",type:"train",target:1,coins:15,bones:1,xp:25}
+];
+const fresh={
+ hunger:75,energy:75,happy:80,love:80,coins:20,bones:0,xp:0,level:1,
+ missionIndex:0,missionProgress:0,started:false,day:1
+};
+let s={...fresh};
+
+function load(){
+ try{
+   const saved=JSON.parse(localStorage.getItem("samo_save_v02"));
+   if(saved) s={...fresh,...saved};
+ }catch(e){}
+}
+function save(){
+  try{
+    localStorage.setItem("samo_save_v02",JSON.stringify(s));
+  }catch(e){
+    // Algunos visores móviles bloquean localStorage.
+    // El juego seguirá funcionando aunque no pueda guardar.
+  }
+}
+function mission(){ return missions[s.missionIndex % missions.length]; }
+function setMessage(t){ document.getElementById("message").textContent=t; }
+function animateDog(){
+ const d=document.getElementById("dog"); d.classList.add("bump");
+ setTimeout(()=>d.classList.remove("bump"),170);
+ if(navigator.vibrate) navigator.vibrate(18);
+}
+function addXP(x){
+ s.xp+=x;
+ while(s.xp>=100){
+   s.xp-=100;s.level++;
+   setMessage("✨ ¡Samo ha subido al nivel "+s.level+"!");
+ }
+}
+function progress(type){
+ const m=mission();
+ if(type!==m.type) return;
+ s.missionProgress++;
+ if(s.missionProgress>=m.target){
+   s.coins+=m.coins;s.bones+=m.bones;addXP(m.xp);
+   document.getElementById("popupText").textContent=m.name+" completada. +"+m.coins+" monedas, +"+m.bones+" hueso y +"+m.xp+" XP.";
+   document.getElementById("popup").classList.add("show");
+   s.missionIndex=(s.missionIndex+1)%missions.length;
+   s.missionProgress=0;
+ }
+}
+function decay(){
+ s.hunger=clamp(s.hunger-2);
+ s.energy=clamp(s.energy-1);
+ s.happy=clamp(s.happy-1);
+}
+function act(type){
+ animateDog();
+ const enoughEnergy=s.energy>8;
+ if((type==="walk"||type==="explore"||type==="train")&&!enoughEnergy){
+   setMessage("😴 Samo está demasiado cansado. Déjale dormir un poco.");
+   return;
+ }
+ switch(type){
+   case "feed":
+     if(s.coins<=0){setMessage("🪙 Necesitas al menos 1 moneda para comprar comida.");return;}
+     s.coins--;s.hunger=clamp(s.hunger+24);s.happy=clamp(s.happy+4);addXP(5);
+     setMessage("🍖 Samo ha comido. Esa cola no para de moverse.");
+     break;
+   case "play":
+     s.happy=clamp(s.happy+18);s.love=clamp(s.love+7);s.energy=clamp(s.energy-10);s.hunger=clamp(s.hunger-5);addXP(10);
+     setMessage("🎾 ¡A por la pelota! Samo se lo está pasando genial.");
+     if(Math.random()<.25){s.bones++;setMessage("🦴 ¡Jugando, Samo ha encontrado un hueso!");}
+     break;
+   case "walk":
+     s.happy=clamp(s.happy+12);s.energy=clamp(s.energy-10);s.hunger=clamp(s.hunger-7);s.coins+=4;addXP(12);
+     setMessage("🐾 Paseo terminado. Samo ha inspeccionado cada esquina.");
+     break;
+   case "pet":
+     s.love=clamp(s.love+18);s.happy=clamp(s.happy+8);addXP(5);
+     setMessage("❤️ Mimos recibidos. Samo oficialmente aprueba.");
+     break;
+   case "explore":
+     s.energy=clamp(s.energy-14);s.hunger=clamp(s.hunger-8);s.happy=clamp(s.happy+8);s.coins+=7;addXP(18);
+     if(Math.random()<.45){s.bones++;setMessage("🧭 Samo ha explorado la zona y ha encontrado un hueso.");}
+     else setMessage("🧭 Exploración completada. +7 monedas.");
+     break;
+   case "sleep":
+     s.energy=clamp(s.energy+32);s.hunger=clamp(s.hunger-4);s.day++;addXP(4);
+     setMessage("😴 Zzz... Samo ha recuperado energía.");
+     break;
+   case "train":
+     s.energy=clamp(s.energy-12);s.hunger=clamp(s.hunger-5);s.love=clamp(s.love+5);addXP(16);
+     setMessage("🏅 Entrenamiento completado. Samo aprende rápido.");
+     break;
+ }
+ progress(type); decay(); save(); render();
+}
+function render(){
+ const vals=[["hunger",s.hunger],["energy",s.energy],["happy",s.happy],["love",s.love]];
+ vals.forEach(([id,v])=>{
+   document.getElementById(id).style.width=v+"%";
+   document.getElementById(id+"N").textContent=Math.round(v);
+ });
+ document.getElementById("coins").textContent=s.coins;
+ document.getElementById("bones").textContent=s.bones;
+ document.getElementById("level").textContent=s.level;
+ const avg=(s.hunger+s.energy+s.happy+s.love)/4;
+ const hearts=Math.max(1,Math.ceil(avg/20));
+ document.getElementById("heartText").textContent="❤️".repeat(hearts);
+ document.getElementById("mood").textContent=avg>=80?"💖":avg>=60?"😊":avg>=40?"🙂":avg>=20?"🥺":"😴";
+
+ const zi=Math.min(zones.length-1,Math.floor((s.level-1)/2));
+ document.getElementById("zone").textContent=zones[zi].toUpperCase();
+ document.getElementById("world").textContent="MUNDO "+(zi+1)+"-"+(((s.level-1)%2)+1);
+
+ const m=mission();
+ document.getElementById("missionName").textContent=m.name;
+ document.getElementById("missionText").textContent=m.text;
+ document.getElementById("reward").textContent=m.coins+" 🪙 + "+m.bones+" 🦴";
+ document.getElementById("missionBar").style.width=((s.missionProgress/m.target)*100)+"%";
+ document.getElementById("startScreen").classList.toggle("hidden",s.started);
+}
+document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>act(b.dataset.action)));
+document.getElementById("continueBtn").addEventListener("click",()=>{
+ document.getElementById("popup").classList.remove("show"); save(); render();
+});
+document.getElementById("startBtn").addEventListener("click",()=>{
+ s.started=true;
+ render();
+ setMessage("🏠 Bienvenido. Hoy comienza la aventura de Samo.");
+ save();
+});
+load();render();
+</script>
+</body>
+</html>
